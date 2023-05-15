@@ -1,8 +1,48 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
  import Table from './Table';
  import Form from './Form';
 
 const LinkContainer = (props) => {
+  const fetchLinks = async () => {
+    try{
+      let response = await fetch('/links')
+      console.log(response)
+      let data = await response.json()
+     // setFavlink(data)
+      console.log(data)
+    }
+    catch (error) {
+      console.log(error)
+    }
+  }
+
+  const postLink = async () => {
+    let testLink = {
+      name: "Test",
+      url: "test.com"
+    }
+
+    try {
+      let response = await fetch('/new', {
+        methods: 'POST',
+        headers: {
+          'Content type': 'application/json'
+        },
+        body: JSON.stringify(testLink)
+      })
+      console.log(response)
+      let message = await response.text()
+      console.log(message)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    fetchLinks()
+    postLink()
+  }, [])
+
 
   const [favLink, setFavlink] = useState([]);
   
@@ -15,6 +55,9 @@ const LinkContainer = (props) => {
             const updatedfavLink = [...favLink];
             updatedfavLink.splice(index, 1);
             setFavlink(updatedfavLink);
+
+            postLink(favLink)
+            fetchLinks()
 
        
   }

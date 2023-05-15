@@ -10,11 +10,30 @@ const pool = new POOL({
   port: 5432,
 })
 
-// Create all the functions that will be our request handlers in our express server
 
-// Create a new link in the db
 
-// Read all the data from db
+const createLink = (reqest, response) => {
+  
+  const name = request.body.name
+  const URL = request.body.url
+
+  if(name && url){
+  pool.query(
+    'INSERT INTO links (name, url) VALUES ($1, $2)', 
+    [name, URL], (error, results)=>{
+      if(error){
+        throw error
+    }
+    console.log(results)
+    response.status(201).send(`Link added with ID: ${results.insertId}
+    `)
+  })
+}
+  else {
+    response.status(403).send("Server is expecting data object with name and url parameter")
+  }
+
+}
 
 const getLinks = (req, res) => {
   pool.query('SELECT * FROM links ORDER BY id ASC', (error, result) => {
@@ -25,10 +44,8 @@ const getLinks = (req, res) => {
   })
 }
 
-// Update link in the db
 
-// Delete link in the db
 
 module.exports = {
-  getLinks,
+  getLinks, createLink
 }
